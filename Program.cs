@@ -13,11 +13,12 @@
 
         static void Main(string[] args)
         {
-            Console.Clear();
+            
             LoadRoomsFromFile();
             LoadReservationsFromFile();
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("\nHotel Room Management System");
                 Console.WriteLine("1. Add New Room");
                 Console.WriteLine("2. View All Rooms");
@@ -94,6 +95,12 @@
             {
                 Console.Write("Enter Room Type (Single, Double, Suite): ");
                 roomType = Console.ReadLine();
+                roomType = roomType.Trim().ToLower();
+                if (roomType != "single" && roomType != "double" && roomType != "suite")
+                {
+                    Console.WriteLine("Invalid room type. Please enter Single, Double, or Suite.");
+                    roomType = string.Empty; // Reset roomType to prompt again
+                }
             } while (string.IsNullOrWhiteSpace(roomType));
 
 
