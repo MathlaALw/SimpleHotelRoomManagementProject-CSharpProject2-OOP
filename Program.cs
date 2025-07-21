@@ -48,6 +48,27 @@
     } // End of Program class
 
 
+    // Classes for Room , Reservation.
+
+    class Room
+    {
+        // Properties for Room class
+        public int RoomNumber { get; private set; }
+        public double DailyRate { get; private set; }
+        public string RoomType { get; private set; }
+        public bool IsReserved { get; set; }
+
+        // Room Constructor
+        public Room(int number, double rate, string roomType)
+        {
+            RoomNumber = number;
+            DailyRate = rate;
+            RoomType = roomType;
+            IsReserved = false;
+        }
+
+       
+    }
 
 
 
