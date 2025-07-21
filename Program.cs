@@ -6,6 +6,11 @@
         // List to store rooms and reservations
         static List<Room> rooms = new List<Room>();
         static List<Reservation> reservations = new List<Reservation>();
+        // Path to save info in file
+        static string roomsFilePath = "rooms.txt";
+        static string reservationsFilePath = "reservations.txt";
+
+
         static void Main(string[] args)
         {
             while (true)
@@ -31,7 +36,11 @@
                     case "5": SearchReservation(); break;
                     case "6": FindHighestPayingGuest(); break;
                     case "7": CancelReservation(); break;
-                    case "8": return; // Exit the system
+                    case "8":
+                        SaveRoomsToFile();
+                        SaveReservationsToFile();
+                        Console.WriteLine("Data saved. Exiting...");
+                        return; // Exit the system
                     default: Console.WriteLine("Invalid choice. Try again."); break;
                 }
             }
@@ -272,7 +281,28 @@
             Console.ReadKey();
         }
 
-
+        // save room info
+        static void SaveRoomsToFile()
+        {
+            using (StreamWriter sw = new StreamWriter(roomsFilePath))
+            {
+                foreach (var room in rooms)
+                {
+                    sw.WriteLine($"{room.RoomNumber},{room.DailyRate},{room.RoomType},{room.IsReserved}");
+                }
+            }
+        }
+        // save Reservation
+        static void SaveReservationsToFile()
+        {
+            using (StreamWriter sw = new StreamWriter(reservationsFilePath))
+            {
+                foreach (var res in reservations)
+                {
+                    sw.WriteLine($"{res.Room.RoomNumber},{res.Guest.Name},{res.Guest.ContactNumber},{res.CheckIn:yyyy-MM-dd},{res.CheckOut:yyyy-MM-dd}");
+                }
+            }
+        }
 
 
     } // End of Program class
