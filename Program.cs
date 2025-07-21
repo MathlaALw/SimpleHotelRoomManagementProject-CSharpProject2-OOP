@@ -173,7 +173,7 @@
             {
                 Console.Write("Enter Contact Number: ");
                 contact = Console.ReadLine();
-                if (contact.Length < 10 || contact.Length > 15)
+                if (contact.Length < 8 || contact.Length > 10)
                 {
                     Console.WriteLine("Contact number must be between 10 and 15 digits.");
                     contact = string.Empty; // Reset contact to prompt again
@@ -324,22 +324,64 @@
         {
             Console.Clear();
             Console.WriteLine("Cancel Reservation by Room Number");
-            Console.WriteLine("Enter Room Number to Cancel Reservation:");
-            int roomNumber = int.Parse(Console.ReadLine());
-            Room room = rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
-            if (room != null && room.IsReserved)
+            int roomNumber;
+            while (true)
             {
-                room.IsReserved = false;
-                var reservation = reservations.FirstOrDefault(r => r.Room.RoomNumber == roomNumber);
-                if (reservation != null)
+                Console.Write("Enter Room Number: ");
+                if (int.TryParse(Console.ReadLine(), out roomNumber))
+                    break;
+                else
+                    Console.WriteLine("Invalid input. Please enter a valid room number.");
+            }
+
+            var matchingReservations = reservations
+                .Where(r => r.Room.RoomNumber == roomNumber)
+                .ToList();
+
+            if (matchingReservations.Count == 0)
+            {
+                Console.WriteLine("No reservations found for this room.");
+                return;
+            }
+
+            
+            Console.WriteLine("\nMatching Reservations:");
+            for (int i = 0; i < matchingReservations.Count; i++)
+            {
+                var res = matchingReservations[i];
+                Console.WriteLine($"{i + 1}. Guest: {res.Guest.Name}, Contact: {res.Guest.ContactNumber}, " +
+                                  $"Check-In: {res.CheckIn:yyyy-MM-dd}, Check-Out: {res.CheckOut:yyyy-MM-dd}");
+            }
+
+          
+            int choice;
+            while (true)
+            {
+                Console.Write("\nEnter the number of the reservation to cancel: ");
+                if (int.TryParse(Console.ReadLine(), out choice) &&
+                    choice >= 1 && choice <= matchingReservations.Count)
                 {
-                    reservations.Remove(reservation);
-                    Console.WriteLine($"Reservation for Room {roomNumber} has been cancelled.");
+                    break;
                 }
+                else
+                {
+                    Console.WriteLine("Invalid selection. Please try again.");
+                }
+            }
+
+           
+            var selectedReservation = matchingReservations[choice - 1];
+            Console.Write($"Are you sure you want to cancel the reservation for {selectedReservation.Guest.Name}? (y/n): ");
+            string confirm = Console.ReadLine().ToLower();
+            if (confirm == "y")
+            {
+                reservations.Remove(selectedReservation);
+                SaveReservationsToFile(); 
+                Console.WriteLine("Reservation cancelled successfully.");
             }
             else
             {
-                Console.WriteLine("Room not found or not reserved.");
+                Console.WriteLine("Cancellation aborted.");
             }
             Console.WriteLine("\nPress any key ...");
             Console.ReadKey();
