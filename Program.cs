@@ -29,7 +29,7 @@
                     case "3": ReserveRoom(); break;
                     case "4": ViewAllReservations(); break;
                     case "5": SearchReservation(); break;
-                    //case "6": FindHighestPayingGuest(); break;
+                    case "6": FindHighestPayingGuest(); break;
                     //case "7": CancelReservation(); break;
                     case "8": return; // Exit the system
                     default: Console.WriteLine("Invalid choice. Try again."); break;
@@ -223,6 +223,28 @@
             Console.ReadKey();
         }
 
+        // Find the highest paying guest
+        static void FindHighestPayingGuest()
+        {
+            Console.Clear();
+            Console.WriteLine("Find Highest Paying Guest");
+            if (reservations.Count == 0)
+            {
+                Console.WriteLine("No reservations available.");
+                return;
+            }
+            var highestPayingReservation = reservations.OrderByDescending(r => r.TotalCost).FirstOrDefault();
+            if (highestPayingReservation != null)
+            {
+                Console.WriteLine($"Highest Paying Guest: {highestPayingReservation.Guest.Name}, Room Number: {highestPayingReservation.Room.RoomNumber}, Total Cost: {highestPayingReservation.TotalCost} OMR");
+            }
+            else
+            {
+                Console.WriteLine("No reservations found.");
+            }
+            Console.WriteLine("\nPress any key ...");
+            Console.ReadKey();
+        }
 
     } // End of Program class
 
