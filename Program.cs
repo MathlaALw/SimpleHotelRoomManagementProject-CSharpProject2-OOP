@@ -30,7 +30,7 @@
                     case "4": ViewAllReservations(); break;
                     case "5": SearchReservation(); break;
                     case "6": FindHighestPayingGuest(); break;
-                    //case "7": CancelReservation(); break;
+                    case "7": CancelReservation(); break;
                     case "8": return; // Exit the system
                     default: Console.WriteLine("Invalid choice. Try again."); break;
                 }
@@ -245,6 +245,35 @@
             Console.WriteLine("\nPress any key ...");
             Console.ReadKey();
         }
+
+        // Cancel reservation by room number
+        static void CancelReservation()
+        {
+            Console.Clear();
+            Console.WriteLine("Cancel Reservation by Room Number");
+            Console.WriteLine("Enter Room Number to Cancel Reservation:");
+            int roomNumber = int.Parse(Console.ReadLine());
+            Room room = rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
+            if (room != null && room.IsReserved)
+            {
+                room.IsReserved = false;
+                var reservation = reservations.FirstOrDefault(r => r.Room.RoomNumber == roomNumber);
+                if (reservation != null)
+                {
+                    reservations.Remove(reservation);
+                    Console.WriteLine($"Reservation for Room {roomNumber} has been cancelled.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Room not found or not reserved.");
+            }
+            Console.WriteLine("\nPress any key ...");
+            Console.ReadKey();
+        }
+
+
+
 
     } // End of Program class
 
