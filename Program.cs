@@ -84,7 +84,33 @@
         }
     }
 
+    class Reservation
+    {
+        
 
+        // Properties for Reservation class
+        public Guest Guest { get; private set; }
+        public Room Room { get; private set; }
+        public DateTime CheckIn { get; private set; }
+        public DateTime CheckOut { get; private set; }
+        public double TotalCost
+        {
+            get
+            {
+                return (CheckOut - CheckIn).Days * Room.DailyRate;
+            }
+        }
+        // Reservation Constructor
+        public Reservation(Room room, Guest guest, DateTime checkIn, DateTime checkOut)
+        {
+            Room = room;
+            Guest = guest;
+            CheckIn = checkIn;
+            CheckOut = checkOut;
+        }
+
+
+    }
 
 
 
