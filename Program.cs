@@ -28,7 +28,7 @@
                     case "2": ViewAllRooms(); break;
                     case "3": ReserveRoom(); break;
                     case "4": ViewAllReservations(); break;
-                    //case "5": SearchReservation(); break;
+                    case "5": SearchReservation(); break;
                     //case "6": FindHighestPayingGuest(); break;
                     //case "7": CancelReservation(); break;
                     case "8": return; // Exit the system
@@ -194,7 +194,34 @@
 
         }
 
+        // Search reservation by guest
 
+        static void SearchReservation()
+        {
+            Console.Clear();
+            Console.WriteLine("Search Reservation by Guest Name");
+            Console.WriteLine("Enter Guest Name to Search:");
+            string guestName = Console.ReadLine();
+
+
+            foreach (Reservation res in reservations)
+            {
+                if (res.Guest.Name == guestName)
+                {
+                    Console.WriteLine($"Reservation found: Guest Name: {res.Guest.Name}, Room Number: {res.Room.RoomNumber}, Check In  {res.CheckIn} ,check Out  {res.CheckOut}, Total Cost: {res.TotalCost} OMR");
+
+                }
+                else
+                {
+                    Console.WriteLine("No reservation found for this guest.");
+
+                }
+
+            }
+
+            Console.WriteLine("\nPress any key ...");
+            Console.ReadKey();
+        }
 
 
     } // End of Program class
