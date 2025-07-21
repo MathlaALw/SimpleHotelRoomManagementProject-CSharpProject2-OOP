@@ -25,7 +25,7 @@
                 switch (choice)
                 {
                     case "1": AddNewRoom(); break;
-                    //case "2": ViewAllRooms(); break;
+                    case "2": ViewAllRooms(); break;
                     //case "3": ReserveRoom(); break;
                     //case "4": ViewAllReservations(); break;
                     //case "5": SearchReservation(); break;
@@ -70,7 +70,42 @@
         }
 
 
+        // View all rooms
+        static void ViewAllRooms()
+        {
+            Console.Clear();
+            Console.WriteLine("Available Rooms:");
+            if (rooms.Count == 0)
+            {
+                Console.WriteLine("No rooms available.");
+            }
+            else
+            {
+                foreach (var room in rooms)
+                {
+                    if (!room.IsReserved)
+                    {
+                        Console.WriteLine($"Room Number: {room.RoomNumber}, Daily Rate: {room.DailyRate}, Status : Not reserved");
+                    }
+                    else if (room.IsReserved)
+                    {
+                        // Find the reservation for this room
+                        var reservation = reservations.FirstOrDefault(r => r.Room.RoomNumber == room.RoomNumber);
+                        if (reservation != null)
+                        {
+                            Console.WriteLine($"Room Number: {room.RoomNumber}, Daily Rate: {room.DailyRate}, Status: Reserved, Guest Name: {reservation.Guest.Name} , Total cost : {reservation.TotalCost} OMR");
 
+                            //Console.WriteLine($"Room Number: {room.RoomNumber}, Daily Rate: {room.DailyRate}, Status: Reserved , Guest Name : {reservations.");
+                        }
+
+                    }
+                }
+            }
+
+            Console.WriteLine("\nPress any key ...");
+            Console.ReadKey();
+
+        }
 
 
 
