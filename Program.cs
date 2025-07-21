@@ -2,6 +2,10 @@
 {
     internal class Program
     {
+
+        // List to store rooms and reservations
+        static List<Room> rooms = new List<Room>();
+        static List<Reservation> reservations = new List<Reservation>();
         static void Main(string[] args)
         {
             while (true)
