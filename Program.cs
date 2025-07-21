@@ -13,6 +13,7 @@
 
         static void Main(string[] args)
         {
+            Console.Clear();
             LoadRoomsFromFile();
             LoadReservationsFromFile();
             while (true)
@@ -39,8 +40,8 @@
                     case "6": FindHighestPayingGuest(); break;
                     case "7": CancelReservation(); break;
                     case "0":
-                        SaveRoomsToFile();
-                        SaveReservationsToFile();
+                        //SaveRoomsToFile();
+                        //SaveReservationsToFile();
                         Console.WriteLine("Data saved. Exiting...");
                         return; // Exit the system
                     default: Console.WriteLine("Invalid choice. Try again."); break;
@@ -56,25 +57,50 @@
         {
             Console.Clear();
             Console.WriteLine("Add New Room");
-            Console.Write("Enter Room Number: ");
-            int roomNumber = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter Daily Rate: ");
-            double rate = double.Parse(Console.ReadLine());
-
-            Console.Write("Enter Room Type (Single, Double, Suite): ");
-            string type = Console.ReadLine();
-
-            if (rooms.Any(r => r.RoomNumber == roomNumber))
+            int roomNumber;
+            while (true)
             {
-                Console.WriteLine("Room already exists.");
+                Console.Write("Enter Room Number: ");
+                if (int.TryParse(Console.ReadLine(), out roomNumber))
+                {
+                   
+                    if (rooms.Any(r => r.RoomNumber == roomNumber))
+                    {
+                        Console.WriteLine("Room number already exists. Try a different one.");
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid number.");
+                }
             }
-            else
+
+            double dailyRate;
+            while (true)
             {
-                Room room = new Room(roomNumber, rate, type);
-                rooms.Add(room);
-                Console.WriteLine("Room added successfully.");
+                Console.Write("Enter Daily Rate: ");
+                if (double.TryParse(Console.ReadLine(), out dailyRate) && dailyRate > 0)
+                    break;
+                else
+                    Console.WriteLine("Invalid rate. Please enter a positive number.");
             }
+
+            string roomType;
+            do
+            {
+                Console.Write("Enter Room Type (Single, Double, Suite): ");
+                roomType = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(roomType));
+
+
+            Room room = new Room(roomNumber, dailyRate, roomType);
+            rooms.Add(room);
+            SaveRoomsToFile();
+            Console.WriteLine("Room added successfully.");
 
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
