@@ -71,7 +71,18 @@
     }
 
 
+    
+    class Guest
+    {
+        public string Name { get; private set; }
+        public string ContactNumber { get; private set; }
 
+        public Guest(string name, string contact)
+        {
+            Name = name;
+            ContactNumber = contact;
+        }
+    }
 
 
 
