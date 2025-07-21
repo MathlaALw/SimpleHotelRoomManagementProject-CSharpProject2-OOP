@@ -25,7 +25,7 @@
                 Console.WriteLine("5. Search Reservation by Guest Name");
                 Console.WriteLine("6. Find Highest Paying Guest");
                 Console.WriteLine("7. Cancel Reservation by Room Number");
-                Console.WriteLine("8. Exit");
+                Console.WriteLine("0. Exit");
                 Console.Write("Choose an option: ");
                 string choice = Console.ReadLine();
 
@@ -38,7 +38,7 @@
                     case "5": SearchReservation(); break;
                     case "6": FindHighestPayingGuest(); break;
                     case "7": CancelReservation(); break;
-                    case "8":
+                    case "0":
                         SaveRoomsToFile();
                         SaveReservationsToFile();
                         Console.WriteLine("Data saved. Exiting...");
@@ -124,47 +124,76 @@
             Console.Clear();
             Console.WriteLine("Reserve a Room");
 
-            Console.Write("Enter Guest Name: ");
-            string guestName = Console.ReadLine();
-
-            Console.Write("Enter Contact Number: ");
-            string contact = Console.ReadLine();
-
-            Console.Write("Enter Room Number to Reserve: ");
-            int roomNumber = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter Check-In Date (yyyy-MM-dd): ");
-            DateTime checkIn = DateTime.Parse(Console.ReadLine());
-
-            Console.Write("Enter Check-Out Date (yyyy-MM-dd): ");
-            DateTime checkOut = DateTime.Parse(Console.ReadLine());
-
-            if (checkOut <= checkIn)
+            string guestName;
+            do
             {
-                Console.WriteLine("Check-out must be after check-in.");
-                Console.ReadKey();
-                return;
-            }
-            else if (checkIn < DateTime.Now)
+                Console.Write("Enter Guest Name: ");
+                guestName = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(guestName))
+                {
+                    Console.WriteLine("Guest name cannot be empty. Please enter a valid name.");
+                }
+            } while (string.IsNullOrWhiteSpace(guestName));
+
+            string contact;
+            do
             {
-                Console.WriteLine("Check-in date cannot be in the past.");
-                Console.ReadKey();
-                return;
-            }
-            // Check if the room exists and is available
-            if (!rooms.Any(r => r.RoomNumber == roomNumber))
+                Console.Write("Enter Contact Number: ");
+                contact = Console.ReadLine();
+                if (contact.Length < 10 || contact.Length > 15)
+                {
+                    Console.WriteLine("Contact number must be between 10 and 15 digits.");
+                    contact = string.Empty; // Reset contact to prompt again
+                }
+            } while (string.IsNullOrWhiteSpace(contact));
+
+            // Check if there are any rooms available
+            int roomNumber;
+            Room room = null;
+            while (true)
             {
-                Console.WriteLine("Room not found.");
-                Console.ReadKey();
-                return;
+                Console.Write("Enter Room Number to Reserve: ");
+                if (int.TryParse(Console.ReadLine(), out roomNumber))
+                {
+                    room = rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
+                    if (room != null)
+                        break;
+                }
+                Console.WriteLine("Invalid Room Number. Try again.");
             }
 
-            Room room = rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
+            DateTime checkIn, checkOut;
 
+            while (true)
+            {
+                Console.Write("Enter Check-In Date (yyyy-MM-dd): ");
+                if (DateTime.TryParse(Console.ReadLine(), out checkIn))
+                    break;
+                Console.WriteLine("Invalid date format. Try again.");
+            }
 
-            bool isOverlapping = reservations.Any(r => r.Room.RoomNumber == roomNumber &&
-            ((checkIn >= r.CheckIn && checkIn < r.CheckOut) || (checkOut > r.CheckIn && checkOut <= r.CheckOut) || (checkIn <= r.CheckIn && checkOut >= r.CheckOut))
-            );
+            while (true)
+            {
+                Console.Write("Enter Check-Out Date (yyyy-MM-dd): ");
+                if (DateTime.TryParse(Console.ReadLine(), out checkOut))
+                {
+                    if (checkOut > checkIn)
+                        break;
+                    else
+                        Console.WriteLine("Check-Out must be after Check-In.");
+                }
+                else
+                    Console.WriteLine("Invalid date format. Try again.");
+            }
+
+            bool isOverlapping = reservations.Any(r =>
+        r.Room.RoomNumber == roomNumber &&
+        (
+            (checkIn >= r.CheckIn && checkIn < r.CheckOut) ||
+            (checkOut > r.CheckIn && checkOut <= r.CheckOut) ||
+            (checkIn <= r.CheckIn && checkOut >= r.CheckOut)
+        )
+    );
 
             if (isOverlapping)
             {
@@ -176,7 +205,7 @@
             Reservation reservation = new Reservation(room, guest, checkIn, checkOut);
             room.IsReserved = true;
             reservations.Add(reservation);
-
+            SaveReservationsToFile();
             Console.WriteLine($"Room reserved successfully for {guestName}. Total cost: {reservation.TotalCost} OMR");
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
