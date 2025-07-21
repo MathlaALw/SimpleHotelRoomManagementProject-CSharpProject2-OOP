@@ -13,6 +13,8 @@
 
         static void Main(string[] args)
         {
+            LoadRoomsFromFile();
+            LoadReservationsFromFile();
             while (true)
             {
                 Console.WriteLine("\nHotel Room Management System");
@@ -303,6 +305,52 @@
                 }
             }
         }
+
+        // Load info
+        static void LoadRoomsFromFile()
+        {
+            if (File.Exists(roomsFilePath))
+            {
+                foreach (var line in File.ReadAllLines(roomsFilePath))
+                {
+                    var parts = line.Split(',');
+                    int roomNumber = int.Parse(parts[0]);
+                    double rate = double.Parse(parts[1]);
+                    string type = parts[2];
+                    bool isReserved = bool.Parse(parts[3]);
+
+                    rooms.Add(new Room(roomNumber, rate, type) { IsReserved = isReserved });
+                }
+            }
+        }
+
+
+        static void LoadReservationsFromFile()
+        {
+            if (File.Exists(reservationsFilePath))
+            {
+                foreach (var line in File.ReadAllLines(reservationsFilePath))
+                {
+                    var parts = line.Split(',');
+
+                    int roomNumber = int.Parse(parts[0]);
+                    string guestName = parts[1];
+                    string contact = parts[2];
+                    DateTime checkIn = DateTime.Parse(parts[3]);
+                    DateTime checkOut = DateTime.Parse(parts[4]);
+
+                    Room room = rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
+                    if (room != null)
+                    {
+                        Guest guest = new Guest(guestName, contact);
+                        Reservation res = new Reservation(room, guest, checkIn, checkOut);
+                        room.IsReserved = true;
+                        reservations.Add(res);
+                    }
+                }
+            }
+        }
+
 
 
     } // End of Program class
