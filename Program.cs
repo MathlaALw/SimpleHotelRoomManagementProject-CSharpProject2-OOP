@@ -24,7 +24,7 @@
 
                 switch (choice)
                 {
-                    //case "1": AddNewRoom(); break;
+                    case "1": AddNewRoom(); break;
                     //case "2": ViewAllRooms(); break;
                     //case "3": ReserveRoom(); break;
                     //case "4": ViewAllReservations(); break;
@@ -38,10 +38,36 @@
 
 
 
-
         }// End of Main method
 
+        // add a new room
+        static void AddNewRoom()
+        {
+            Console.Clear();
+            Console.WriteLine("Add New Room");
+            Console.Write("Enter Room Number: ");
+            int roomNumber = int.Parse(Console.ReadLine());
 
+            Console.Write("Enter Daily Rate: ");
+            double rate = double.Parse(Console.ReadLine());
+
+            Console.Write("Enter Room Type (Single, Double, Suite): ");
+            string type = Console.ReadLine();
+
+            if (rooms.Any(r => r.RoomNumber == roomNumber))
+            {
+                Console.WriteLine("Room already exists.");
+            }
+            else
+            {
+                Room room = new Room(roomNumber, rate, type);
+                rooms.Add(room);
+                Console.WriteLine("Room added successfully.");
+            }
+
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey();
+        }
 
 
 
