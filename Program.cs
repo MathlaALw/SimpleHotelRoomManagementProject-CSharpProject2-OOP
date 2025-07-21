@@ -26,7 +26,7 @@
                 {
                     case "1": AddNewRoom(); break;
                     case "2": ViewAllRooms(); break;
-                    //case "3": ReserveRoom(); break;
+                    case "3": ReserveRoom(); break;
                     //case "4": ViewAllReservations(); break;
                     //case "5": SearchReservation(); break;
                     //case "6": FindHighestPayingGuest(); break;
@@ -107,7 +107,71 @@
 
         }
 
+        // Reserve a room
+        static void ReserveRoom()
+        {
+            Console.Clear();
+            Console.WriteLine("Reserve a Room");
 
+            Console.Write("Enter Guest Name: ");
+            string guestName = Console.ReadLine();
+
+            Console.Write("Enter Contact Number: ");
+            string contact = Console.ReadLine();
+
+            Console.Write("Enter Room Number to Reserve: ");
+            int roomNumber = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter Check-In Date (yyyy-MM-dd): ");
+            DateTime checkIn = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Enter Check-Out Date (yyyy-MM-dd): ");
+            DateTime checkOut = DateTime.Parse(Console.ReadLine());
+
+            if (checkOut <= checkIn)
+            {
+                Console.WriteLine("Check-out must be after check-in.");
+                Console.ReadKey();
+                return;
+            }
+            else if (checkIn < DateTime.Now)
+            {
+                Console.WriteLine("Check-in date cannot be in the past.");
+                Console.ReadKey();
+                return;
+            }
+            // Check if the room exists and is available
+            if (!rooms.Any(r => r.RoomNumber == roomNumber))
+            {
+                Console.WriteLine("Room not found.");
+                Console.ReadKey();
+                return;
+            }
+
+            Room room = rooms.FirstOrDefault(r => r.RoomNumber == roomNumber);
+
+
+            bool isOverlapping = reservations.Any(r => r.Room.RoomNumber == roomNumber &&
+            ((checkIn >= r.CheckIn && checkIn < r.CheckOut) || (checkOut > r.CheckIn && checkOut <= r.CheckOut) || (checkIn <= r.CheckIn && checkOut >= r.CheckOut))
+            );
+
+            if (isOverlapping)
+            {
+                Console.WriteLine("Room is already reserved in the selected date range.");
+                return;
+            }
+
+            Guest guest = new Guest(guestName, contact);
+            Reservation reservation = new Reservation(room, guest, checkIn, checkOut);
+            room.IsReserved = true;
+            reservations.Add(reservation);
+
+            Console.WriteLine($"Room reserved successfully for {guestName}. Total cost: {reservation.TotalCost} OMR");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey();
+
+
+        }
 
 
     } // End of Program class
