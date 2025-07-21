@@ -27,7 +27,7 @@
                     case "1": AddNewRoom(); break;
                     case "2": ViewAllRooms(); break;
                     case "3": ReserveRoom(); break;
-                    //case "4": ViewAllReservations(); break;
+                    case "4": ViewAllReservations(); break;
                     //case "5": SearchReservation(); break;
                     //case "6": FindHighestPayingGuest(); break;
                     //case "7": CancelReservation(); break;
@@ -172,6 +172,29 @@
 
 
         }
+
+        // View all reservations
+        static void ViewAllReservations()
+        {
+            Console.Clear();
+            Console.WriteLine("All Reservations:");
+
+            if (reservations.Count == 0)
+            {
+                Console.WriteLine("No reservations available.");
+                return;
+            }
+            foreach (Reservation reservation in reservations)
+            {
+                Console.WriteLine($"Guest Name: {reservation.Guest.Name}, Room Number: {reservation.Room.RoomNumber}, Check In {reservation.CheckIn},check Out {reservation.CheckOut}, Total Cost: {reservation.TotalCost} OMR");
+            }
+
+            Console.WriteLine("Press any key ...");
+            Console.ReadKey();
+
+        }
+
+
 
 
     } // End of Program class
